@@ -1,5 +1,5 @@
 numpy
 opencv-python
 tensorflow==1.13.1
-tensorflow-gpu==1.13.1
+tensorflow-gpu==1.15.2
 tensorflow-serving-api==1.13.1
