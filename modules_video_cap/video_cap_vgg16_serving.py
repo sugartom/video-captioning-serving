@@ -14,63 +14,27 @@ from tensorflow_serving.apis import prediction_service_pb2_grpc
 
 from tensorflow.python.framework import tensor_util
 
-# # Path to actual model
-# VGG16_CKPT = os.path.abspath('./modules_video_cap/vggnet/model/vgg_16.ckpt')
-
 IMAGE_SIZE = 224
 N_DIMS = 80
 
 class VGG16:
-  def __init__(self):
 
+  def Setup(self):
+
+    # input
     self.input = None
 
     # -- hyper settings
     self.image_size = IMAGE_SIZE
     self.out_dims = N_DIMS
-
-    # # net input
-    # self.image = tf.placeholder(tf.uint8, shape=(None, None, 3))
-
-  def Setup(self):
-
+    
     # output
     self.features_fc7 = []
-
-    # image_pre = vgg_preprocessing.preprocess_image(self.image, self.image_size, self.image_size, is_training=False)
-    # self.image_4d = tf.expand_dims(image_pre, 0)
-
-    # # net forward
-    # with slim.arg_scope(vgg.vgg_arg_scope()):
-    # #     1000 classes instead of 1001.
-    #    _, _ = vgg.vgg_16(self.image_4d, num_classes=1000, is_training=False)
-    
-    # self.init_fn = slim.assign_from_checkpoint_fn(
-    #     VGG16_CKPT,
-    #     slim.get_model_variables('vgg_16'))
-
-    # self.sess = tf.Session()
-
-    # self.vgg16_graph = tf.get_default_graph()
-
-    # # variables need to be initialized before any sess.run() calls
-    # self.sess.run(tf.global_variables_initializer())
-    # self.init_fn(self.sess)
-
-    # # net output
-    # self.fc7 = tf.get_default_graph().get_tensor_by_name("vgg_16/fc7/Relu:0")
-
-    # self.log('init done ')
 
   def PreProcess(self, input):
     self.input = input
 
   def Apply(self):
-    # if not self.input:
-    #   self.log('Input is empty')
-    #   return 
-
-
     ichannel = grpc.insecure_channel("localhost:8500")
     self.istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
 

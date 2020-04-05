@@ -2,10 +2,8 @@
 import os
 import numpy as np
 import tensorflow as tf
-import glob
 from preprocess import *
 import cv2
-import imageio
 
 """Utilities for training the video captioning system"""
 
@@ -36,25 +34,6 @@ def get_bias_vector():
     bias_init_vector -= np.max(bias_init_vector)
     return bias_init_vector
 
-# def fetch_data_batch_val(batch_size):
-#     """Function to fetch a batch of video features from the validation set and its captions.
-#         Input:
-#                 batch_size: Size of batch to load
-#         Output:
-#                 curr_vids: Features of the randomly selected batch of video_files
-#                 curr_caps: Ground truth (padded) captions for the selected videos"""
-
-#     curr_batch_vids = np.random.choice(val_files,batch_size)
-#     # curr_batch_vids = ["vid174"]
-#     print curr_batch_vids
-#     curr_vids = np.array([np.load(VIDEO_DIR + vid + '.npy') for vid in curr_batch_vids])
-#     # curr_vids = np.array([np.load(VIDEO_DIR + Vid2Url[vid] + '.npy') for vid in curr_batch_vids])
-#     video_urls = [vid for vid in curr_batch_vids]
-#     ind_50 = map(int,np.linspace(0,79,n_lstm_steps))
-#     curr_vids = curr_vids[:,ind_50,:]
-#     captions = [np.random.choice(Vid2Cap_val[vid],1)[0] for vid in curr_batch_vids]
-#     curr_caps,curr_masks = convert_caption(captions,word2id,n_lstm_steps)
-#     return curr_vids,curr_caps,curr_masks,video_urls
 
 def fetch_data_batch_inference(vid_features, vid_name):
     """Function to fetch a batch of video features from the validation set and its captions.
@@ -65,8 +44,6 @@ def fetch_data_batch_inference(vid_features, vid_name):
                 curr_caps: Ground truth (padded) captions for the selected videos"""
 
     curr_batch_vids = [str(vid_name)]
-    # curr_batch_vids = ["vid174"]
-    # curr_vids = np.array([np.load(VIDEO_DIR + vid + '.npy') for vid in curr_batch_vids])
     curr_vids = np.expand_dims(vid_features, axis = 0)
     video_urls = [vid for vid in curr_batch_vids]
     ind_50 = map(int,np.linspace(0,79,n_lstm_steps))
@@ -80,17 +57,21 @@ def print_in_english(caption_idx):
         print the captions after mapping word indices back to words."""
     captions_english = [[id2word[word] for word in caption] for caption in caption_idx]
     for i,caption in enumerate(captions_english):
-	if '<EOS>' in caption:
-       	    caption = caption[0:caption.index('<EOS>')]
-        log(str(i+1) + ' ' + ' '.join(caption))
+        if '<EOS>' in caption:
+            caption = caption[1:caption.index('<EOS>')] # Skipping the starting word "<BOS>"
+        log(' '.join(caption))
         log('..................................................')
 
-def playVideo(video_urls):
-    video = imageio.get_reader(YOUTUBE_CLIPS_DIR + video_urls[0] + '.mp4','ffmpeg')
-    for frame in video:
-        fr = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
-        cv2.imshow('frame',fr)
-        if cv2.waitKey(40) & 0xFF == ord('q'):
+def playVideo(video_path):
+    print("Press 'q' to exit")
+    cap = cv2.VideoCapture(video_path)
+    while(True):
+        ret, frame = cap.read()
+        if ret:
+            cv2.imshow('frame',frame)
+            if cv2.waitKey(40) & 0xFF == ord('q'):
+                break
+        else:
             break
     cv2.destroyAllWindows()
 

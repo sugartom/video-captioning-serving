@@ -22,6 +22,7 @@ Paper: [Sequence to Sequence -- Video to Text](http://www.cs.utexas.edu/users/ml
 For now we support ```Python 2.7``` (Support for ```Python 3``` will be added soon)
 See ```requirements.txt``` for python packages.
 ```
+apt install libopencv-dev
 pip install -r requirements.txt
 ```
 ## Running

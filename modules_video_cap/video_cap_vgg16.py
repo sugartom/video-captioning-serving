@@ -31,22 +31,18 @@ class VGG16:
 
   def Setup(self):
     
-    print(self.image.shape)
     image_pre = vgg_preprocessing.preprocess_image(self.image, self.image_size, self.image_size, is_training=False)
-    print(image_pre.shape)
     self.image_4d = tf.expand_dims(image_pre, 0)
-    print(self.image_4d.shape)
 
     # net forward
     with slim.arg_scope(vgg.vgg_arg_scope()):
     #     1000 classes instead of 1001.
        _, _ = vgg.vgg_16(self.image_4d, num_classes=1000, is_training=False)
     
+    self.log("Model loading...")
     self.init_fn = slim.assign_from_checkpoint_fn(
         VGG16_CKPT,
         slim.get_model_variables('vgg_16'))
-
-    # self.vgg16_graph = tf.get_default_graph()
 
     # net output
     self.fc7 = tf.get_default_graph().get_tensor_by_name("vgg_16/fc7/Relu:0")
@@ -54,10 +50,9 @@ class VGG16:
     self.sess = tf.Session()
 
     # variables need to be initialized before any sess.run() calls
-    # self.sess.run(tf.global_variables_initializer())
     self.init_fn(self.sess)
 
-    self.log('init done ')
+    self.log("Restored model")
 
   def PreProcess(self, input):
     self.input = input
@@ -66,17 +61,14 @@ class VGG16:
     if not self.input:
       self.log('Input is empty')
       return 
-    self.log("Image type {}, shape {}".format(type(self.input['img']), self.input['img'].shape))
+
     feature = self.sess.run([self.fc7], feed_dict={self.image: self.input['img']})
-    # self.log("FC 7 type {}, shape {}".format(type(feature[0]), len(feature)))
-    # self.log("FC 7 numpy shape {}".format(np.array(feature).shape))
-    # np.save("fc7_pipeline" + '.npy',feature[0])
+
     if len(feature) != 0:
       self.feature_fc7 = feature[0].reshape(-1, feature[0].shape[-1])
     else:
       self.log('Error while extracting FC7 embedding')
       return 
-
 
   def PostProcess(self):
 

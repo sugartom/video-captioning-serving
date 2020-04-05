@@ -4,6 +4,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 import sys
 import os
 import numpy as np
+from modules_video_cap.utils import *
 
 sys.path.append(os.path.abspath('./'))
 
@@ -20,8 +21,9 @@ elif (sys.argv[1] == "serving"):
   from modules_video_cap.video_cap_s2vt_serving import S2VT
 
 # ============ Video Input Module ============
+video_path = os.path.abspath("./modules_video_cap/Data/YoutubeClips/vid355.mp4")
 reader = DataReader()
-reader.Setup(os.path.abspath("./modules_video_cap/Data/YoutubeClips/vid264.mp4"))
+reader.Setup(video_path)
 
 # # ============ VGG16 Embedding Module ===========
 vgg16 = VGG16()
@@ -38,23 +40,18 @@ while(True):
   if not frame_data:  # end of video 
     break
 
-  # print(frame_data['img'].shape)
-  # print(frame_data['meta']['vid_name'])
-
   vgg16.PreProcess(frame_data)
   vgg16.Apply()
   features_data = vgg16.PostProcess()
-
-  if features_data['features'] is not None:
-    print(features_data['features'].shape)
 
   s2vt.PreProcess(features_data)
   s2vt.Apply()
   s2vt.PostProcess()
 
-  # if features_data['features'] is not None:
-  #   break
-
+# ============ Play Video Module ============
+play_video = raw_input('Play Video? ')
+if play_video.lower() == 'y':
+  playVideo(video_path)
 
   
 
