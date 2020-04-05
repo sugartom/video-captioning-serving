@@ -2,7 +2,7 @@ import os
 import sys
 import numpy as np
 import tensorflow as tf
-from utils import *
+from utils_cap import *
 
 import grpc
 from tensorflow_serving.apis import predict_pb2

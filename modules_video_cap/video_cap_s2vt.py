@@ -2,7 +2,7 @@ import os
 import sys
 import numpy as np
 import tensorflow as tf
-from utils import *
+from utils_cap import *
 
 # Path to actual model
 S2VT_CKPT = '/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/modules_video_cap/s2vt/model/S2VT_Dyn_10_0.0001_300_46000.ckpt'
