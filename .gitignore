@@ -138,9 +138,11 @@ modules_video_cap/vggnet/
 *.ckpt.*
 
 # my files
-*.mp4
+# *.mp4
 *.ipynb
 *.fuse*
 
 # Pyre type checker
 .pyre/
+
+out-*

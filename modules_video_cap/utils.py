@@ -9,11 +9,13 @@ import cv2
 
 #Global initializations
 n_lstm_steps = 80
-DATA_DIR = os.path.abspath('./modules_video_cap/Data/')
+# DATA_DIR = os.path.abspath('./modules_video_cap/Data/')
+# DATA_DIR = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/"
 # VIDEO_DIR = DATA_DIR + 'Features_VGG/'
 # VIDEO_DIR = DATA_DIR + 'Features_Alexnet_tf/'
-YOUTUBE_CLIPS_DIR = DATA_DIR + '/YouTubeClips/'
-TEXT_DIR = os.path.abspath('./modules_video_cap/text_files')
+YOUTUBE_CLIPS_DIR = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/"
+# TEXT_DIR = os.path.abspath('./modules_video_cap/text_files')
+TEXT_DIR = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/modules_video_cap/text_files"
 Vid2Url = eval(open(TEXT_DIR + '/Vid2Url_Full.txt').read())
 Vid2Cap_train = eval(open(TEXT_DIR + '/Vid2Cap_train.txt').read())
 Vid2Cap_val = eval(open(TEXT_DIR + '/Video2Caption_mytest.txt').read())

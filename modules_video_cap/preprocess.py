@@ -1,7 +1,7 @@
 import numpy as np
 import os
 
-TEXT_DIR = os.path.abspath('./modules_video_cap/text_files')
+TEXT_DIR = '/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/modules_video_cap/text_files'
 
 """Functions to do the following:
             * Create vocabulary

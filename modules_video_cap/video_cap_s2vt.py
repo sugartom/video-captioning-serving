@@ -5,8 +5,8 @@ import tensorflow as tf
 from utils import *
 
 # Path to actual model
-S2VT_CKPT = os.path.abspath('./modules_video_cap/s2vt/model/S2VT_Dyn_10_0.0001_300_46000.ckpt')
-S2VT_CKPT_META = os.path.abspath('./modules_video_cap/s2vt/model/S2VT_Dyn_10_0.0001_300_46000.ckpt.meta')
+S2VT_CKPT = '/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/modules_video_cap/s2vt/model/S2VT_Dyn_10_0.0001_300_46000.ckpt'
+S2VT_CKPT_META = '/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/modules_video_cap/s2vt/model/S2VT_Dyn_10_0.0001_300_46000.ckpt.meta'
 
 N_STEPS = 80
 HIDDEN_DIM = 500
