@@ -21,7 +21,7 @@ elif (sys.argv[1] == "serving"):
   from modules_video_cap.video_cap_s2vt_serving import S2VT
 
 # ============ Video Input Module ============
-video_path = os.path.abspath("./modules_video_cap/Data/YoutubeClips/vid355.mp4")
+video_path = os.path.abspath("./modules_video_cap/Data/YoutubeClips/vid264.mp4")
 reader = DataReader()
 reader.Setup(video_path)
 
