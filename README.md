@@ -4,7 +4,7 @@ Paper: [Sequence to Sequence -- Video to Text](http://www.cs.utexas.edu/users/ml
 
 
 ## How to Use
-- Clone this repo to your machine ```git clone https://github.com/Rajrup/video-captioning-serving.git```
+- Clone this repo to your machine ```git clone --recurse-submodules https://github.com/Rajrup/video-captioning-serving.git```
 - Download the checkpoints and tensorflow servables (see below)
 - Double check the model paths
 - To Run ```pipeline.py```
