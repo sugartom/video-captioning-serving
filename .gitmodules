@@ -1,0 +1,3 @@
+[submodule "modules_video_cap/models"]
+	path = modules_video_cap/models
+	url = https://github.com/tensorflow/models.git

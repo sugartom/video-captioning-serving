@@ -3,7 +3,7 @@ import sys
 import tensorflow as tf
 import numpy as np
 
-sys.path.append(os.path.abspath('./modules_video_cap/VGG_tensorflow/research/slim/'))
+sys.path.append(os.path.abspath('./modules_video_cap/models/research/slim/'))
 from tensorflow.contrib import slim
 from tensorflow.contrib.slim.nets import vgg
 from preprocessing import vgg_preprocessing

@@ -35,6 +35,7 @@ pip install -r requirements.txt
 - Tensorflow Serving Pipeline:
   + Run serving in docker
     ```
+    chmod +x run_tf_server.sh
     ./run_tf_server.sh
     ```
   + Run client:
