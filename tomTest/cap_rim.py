@@ -55,5 +55,7 @@ while (frame_id < 250):
   next_request = s2vt.PostProcess(grpc_flag = False)
 
   # print(next_request["FINAL"])
+  if (next_request["FINAL"] != "None"):
+    print(next_request["FINAL"])
 
   frame_id += 1

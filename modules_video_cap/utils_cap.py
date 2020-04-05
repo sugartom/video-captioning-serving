@@ -61,8 +61,9 @@ def print_in_english(caption_idx):
     for i,caption in enumerate(captions_english):
         if '<EOS>' in caption:
             caption = caption[1:caption.index('<EOS>')] # Skipping the starting word "<BOS>"
-        log(' '.join(caption))
-        log('..................................................')
+        # log(' '.join(caption))
+        # log('..................................................')
+        return caption
 
 def playVideo(video_path):
     print("Press 'q' to exit")

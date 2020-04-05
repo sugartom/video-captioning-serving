@@ -51,14 +51,17 @@ class CapS2VT:
         if id2word[output_captions[0][i]] == '<EOS>':
           break
 
+      self.caption = ' '.join(print_in_english(self.caps))
+
+    else:
+      self.caption = "None"
+
   def PostProcess(self, grpc_flag):
-    if self.input['features'] is not None:
-      print_in_english(self.caps)
     if (grpc_flag):
       next_request = predict_pb2.PredictRequest()
       next_request.inputs["FINAL"].CopyFrom(
-        tf.make_tensor_proto("OK"))
+        tf.make_tensor_proto(self.caption))
     else:
       next_request = dict()
-      next_request["FINAL"] = "OK"
+      next_request["FINAL"] = self.caption
     return next_request
