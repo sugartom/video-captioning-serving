@@ -146,3 +146,6 @@ modules_video_cap/vggnet/
 .pyre/
 
 out-*
+checkpoints
+tf_servable
+pickle_tmp

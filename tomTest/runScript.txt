@@ -5,3 +5,6 @@ python pipeline.py original
 tensorflow_model_server --port=8500 --model_config_file=/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/tf_servable/models.conf >out-001 2>&1
 python pipeline.py serving
 
+-- rim version
+tensorflow_model_server --port=8500 --model_config_file=/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/tf_servable/models.conf >out-001 2>&1
+python cap_rim.py

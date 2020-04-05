@@ -12,7 +12,7 @@ from preprocessing import vgg_preprocessing
 
 # Path to actual model
 # VGG16_CKPT = os.path.abspath('./modules_video_cap/vggnet/model/vgg_16.ckpt')
-VGG16_CKPT = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/modules_video_cap/vggnet/model/vgg_16.ckpt"
+VGG16_CKPT = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/checkpoints/vggnet/model/vgg_16.ckpt"
 
 IMAGE_SIZE = 224
 N_DIMS = 80

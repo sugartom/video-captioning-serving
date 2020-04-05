@@ -72,9 +72,9 @@ class S2VT:
   def PostProcess(self):
     if self.input['features'] is not None:
       self.log('S2VT Caption:')
-      print_in_english(self.caps)
+      print(print_in_english(self.caps))
       self.log('GT Caption:')
-      print_in_english(self.caption_GT)
+      print(print_in_english(self.caption_GT))
 
   def log(self, s):
     print('[S2VT] %s' % s)

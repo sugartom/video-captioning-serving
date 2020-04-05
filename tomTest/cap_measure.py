@@ -29,6 +29,8 @@ istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
 simple_route_table = "cap_vgg-cap_s2vt"
 route_table = simple_route_table
 
+measure_module = "cap_vgg"
+
 video_path = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/vid264.mp4"
 reader = cv2.VideoCapture(video_path)
 
@@ -50,11 +52,16 @@ while (frame_id < 250):
 
   # print(next_request["vgg_output"])
 
-  s2vt.PreProcess(request = next_request, istub = istub, grpc_flag = False)
-  s2vt.Apply()
-  next_request = s2vt.PostProcess(grpc_flag = False)
+  if (frame_id == 79 or frame_id == 80):
+    pickle_output = "/home/yitao/Downloads/tmp/docker-share/pickle_tmp_combined/video-captioning-serving/pickle_tmp/cap_vgg/%s" % (str(frame_id).zfill(3))
+    with open(pickle_output, 'w') as f:
+      pickle.dump(next_request, f)
 
-  if (next_request["FINAL"] != "None"):
-    print(next_request["FINAL"])
+  # s2vt.PreProcess(request = next_request, istub = istub, grpc_flag = False)
+  # s2vt.Apply()
+  # next_request = s2vt.PostProcess(grpc_flag = False)
+
+  # if (next_request["FINAL"] != "None"):
+  #   print(next_request["FINAL"])
 
   frame_id += 1

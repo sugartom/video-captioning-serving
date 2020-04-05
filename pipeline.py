@@ -4,7 +4,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 import sys
 import os
 import numpy as np
-from modules_video_cap.utils import *
+from modules_video_cap.utils_cap import *
 
 sys.path.append(os.path.abspath('./'))
 
@@ -21,7 +21,7 @@ elif (sys.argv[1] == "serving"):
   from modules_video_cap.video_cap_s2vt_serving import S2VT
 
 # ============ Video Input Module ============
-video_path = os.path.abspath("./modules_video_cap/Data/YoutubeClips/vid264.mp4")
+video_path = os.path.abspath("/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/vid264.mp4")
 reader = DataReader()
 reader.Setup(video_path)
 
