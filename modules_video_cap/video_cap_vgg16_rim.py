@@ -26,7 +26,7 @@ class CapVGG16:
 
   def Apply(self):
     internal_request = predict_pb2.PredictRequest()
-    internal_request.model_spec.name = 'vgg16'
+    internal_request.model_spec.name = 'cap_vgg'
     internal_request.model_spec.signature_name = 'predict_images'
     internal_request.inputs['input'].CopyFrom(
       tf.contrib.util.make_tensor_proto(self.image, shape=self.image.shape))

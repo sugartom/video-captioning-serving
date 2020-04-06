@@ -30,7 +30,7 @@ class CapS2VT:
 
       for i in range(CapS2VT.n_steps):
         internal_request = predict_pb2.PredictRequest()
-        internal_request.model_spec.name = 's2vt'
+        internal_request.model_spec.name = 'cap_s2vt'
         internal_request.model_spec.signature_name = 'predict_images'
         internal_request.inputs['input_video'].CopyFrom(
             tf.contrib.util.make_tensor_proto(self.vid, shape=self.vid.shape))
