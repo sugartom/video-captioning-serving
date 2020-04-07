@@ -18,6 +18,7 @@ elif (sys.argv[1] == "serving"):
   # serving version 
   from modules_video_cap.data_reader import DataReader
   from modules_video_cap.video_cap_vgg16_serving import VGG16
+  from modules_video_cap.video_cap_alexnet_serving import AlexNet
   from modules_video_cap.video_cap_s2vt_serving import S2VT
 
 # ============ Video Input Module ============
@@ -28,6 +29,11 @@ reader.Setup(video_path)
 # # ============ VGG16 Embedding Module ===========
 vgg16 = VGG16()
 vgg16.Setup()
+
+alexnet = AlexNet()
+alexnet.Setup()
+
+first = vgg16
 
 # ============ S2VT Caption Module ===========
 s2vt = S2VT()
@@ -40,9 +46,9 @@ while(True):
   if not frame_data:  # end of video 
     break
 
-  vgg16.PreProcess(frame_data)
-  vgg16.Apply()
-  features_data = vgg16.PostProcess()
+  first.PreProcess(frame_data)
+  first.Apply()
+  features_data = first.PostProcess()
 
   s2vt.PreProcess(features_data)
   s2vt.Apply()

@@ -15,10 +15,17 @@ import sys
 sys.path.append('/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/')
 
 from modules_video_cap.video_cap_vgg16_rim import CapVGG16
+from modules_video_cap.video_cap_alexnet_rim import CapAlexnet
 from modules_video_cap.video_cap_s2vt_rim import CapS2VT
 
 vgg = CapVGG16()
 vgg.Setup()
+
+alexnet = CapAlexnet()
+alexnet.Setup()
+
+first = vgg
+# first = alexnet
 
 s2vt =CapS2VT()
 s2vt.Setup()
@@ -26,7 +33,7 @@ s2vt.Setup()
 ichannel = grpc.insecure_channel("localhost:8500")
 istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
 
-simple_route_table = "cap_vgg-cap_s2vt"
+simple_route_table = "cap_alexnet-cap_s2vt"
 route_table = simple_route_table
 
 video_path = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/vid264.mp4"
@@ -44,9 +51,9 @@ while (frame_id < 250):
 
   request["client_input"] = image
 
-  vgg.PreProcess(request = request, istub = istub, features_fc7 = features_fc7, my_lock = my_lock, grpc_flag = False)
-  vgg.Apply()
-  next_request = vgg.PostProcess(grpc_flag = False)
+  first.PreProcess(request = request, istub = istub, features_fc7 = features_fc7, my_lock = my_lock, grpc_flag = False)
+  first.Apply()
+  next_request = first.PostProcess(grpc_flag = False)
 
   # print(next_request["vgg_output"])
 

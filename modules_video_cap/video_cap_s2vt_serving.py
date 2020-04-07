@@ -50,7 +50,7 @@ class S2VT:
         self.istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
 
         self.internal_request = predict_pb2.PredictRequest()
-        self.internal_request.model_spec.name = 's2vt'
+        self.internal_request.model_spec.name = 'cap_s2vt'
         self.internal_request.model_spec.signature_name = 'predict_images'
         self.internal_request.inputs['input_video'].CopyFrom(
             tf.contrib.util.make_tensor_proto(self.vid, shape=self.vid.shape))

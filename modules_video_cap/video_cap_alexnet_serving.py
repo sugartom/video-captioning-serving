@@ -1,12 +1,9 @@
 import os
 import sys
-import tensorflow as tf
+import cv2
 import numpy as np
-
-sys.path.append('/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/modules_video_cap/models/research/slim/')
-from tensorflow.contrib import slim
-from tensorflow.contrib.slim.nets import vgg
-from preprocessing import vgg_preprocessing
+import skimage.transform
+import tensorflow as tf
 
 import grpc
 from tensorflow_serving.apis import predict_pb2
@@ -14,42 +11,54 @@ from tensorflow_serving.apis import prediction_service_pb2_grpc
 
 from tensorflow.python.framework import tensor_util
 
-IMAGE_SIZE = 224
+IMAGE_SIZE = 227
 N_DIMS = 80
 
-class VGG16:
+class AlexNet:
 
   def Setup(self):
 
-    # input
     self.input = None
 
     # -- hyper settings
     self.image_size = IMAGE_SIZE
-    self.out_dims = N_DIMS
-    
+    self.keep_prob = np.float32(1.0)
+
+    #mean of imagenet dataset in BGR
+    self.imagenet_mean = np.array([104., 117., 124.], dtype=np.float32)
+
     # output
     self.features_fc7 = []
 
   def PreProcess(self, input):
     self.input = input
 
+    # Convert image to float32 and resize to (227x227)
+    self.input_image = cv2.resize(self.input['img'].astype(np.float32), (self.image_size, self.image_size))
+    
+    # Subtract the ImageNet mean
+    self.input_image -= self.imagenet_mean
+
+    # Reshape as needed to feed into model
+    self.input_image = self.input_image.reshape((1, self.image_size, self.image_size, 3))
+
   def Apply(self):
+
     ichannel = grpc.insecure_channel("localhost:8500")
     self.istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
 
     self.internal_request = predict_pb2.PredictRequest()
-    self.internal_request.model_spec.name = 'cap_vgg'
+    self.internal_request.model_spec.name = 'cap_alexnet'
     self.internal_request.model_spec.signature_name = 'predict_images'
 
     self.internal_request.inputs['input'].CopyFrom(
-    tf.contrib.util.make_tensor_proto(self.input['img'], shape=self.input['img'].shape))
+    tf.contrib.util.make_tensor_proto(self.input_image, shape=self.input_image.shape))
+    self.internal_request.inputs['input_keep_prob'].CopyFrom(
+            tf.contrib.util.make_tensor_proto(self.keep_prob, dtype=np.float32))
 
     self.internal_result = self.istub.Predict(self.internal_request, 10.0) # 10 sec timeout
 
-    feature = tensor_util.MakeNdarray(self.internal_result.outputs['output'])
-    self.feature_fc7 = feature[0].reshape(-1, feature[0].shape[-1])
-
+    self.feature_fc7 = tensor_util.MakeNdarray(self.internal_result.outputs['output'])
 
   def PostProcess(self):
 
@@ -64,5 +73,5 @@ class VGG16:
       return {'features': None, 'num_features': 0, 'meta': None}
       
   def log(self, s):
-    print('[VGG16] %s' % s)
+    print('[AlexNet] %s' % s)
   
