@@ -24,17 +24,14 @@ vgg.Setup()
 alexnet = CapAlexnet()
 alexnet.Setup()
 
-first = vgg
-# first = alexnet
+# first = vgg
+first = alexnet
 
 s2vt =CapS2VT()
 s2vt.Setup()
 
 ichannel = grpc.insecure_channel("localhost:8500")
 istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
-
-simple_route_table = "cap_alexnet-cap_s2vt"
-route_table = simple_route_table
 
 video_path = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/vid264.mp4"
 reader = cv2.VideoCapture(video_path)
@@ -44,7 +41,12 @@ frame_id = 1
 features_fc7 = []
 my_lock = threading.Lock()
 
+total = 0.0
+count = 0
+
 while (frame_id < 250):
+  start = time.time()
+
   _, image = reader.read()
 
   request = dict()
@@ -61,7 +63,17 @@ while (frame_id < 250):
   s2vt.Apply()
   next_request = s2vt.PostProcess(grpc_flag = False)
 
-  if (next_request["FINAL"] != "None"):
-    print(next_request["FINAL"])
+  # if (next_request["FINAL"] != "None"):
+  #   print(next_request["FINAL"])
+
+  end = time.time()
+
+  duration = end - start
+  print("duration = %f" % duration)
+  if (frame_id > 5):
+    count += 1
+    total += duration
 
   frame_id += 1
+
+print("on average, it takes %f sec per frame" % (total / count))
