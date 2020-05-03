@@ -3,6 +3,7 @@ import time
 import pickle
 import cv2
 import threading
+import sys
 
 import tensorflow as tf
 tf.logging.set_verbosity(tf.logging.ERROR)
@@ -29,7 +30,7 @@ istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
 simple_route_table = "cap_vgg-cap_s2vt"
 route_table = simple_route_table
 
-measure_module = "cap_vgg"
+measure_module = "cap_s2vt"
 
 video_path = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/vid264.mp4"
 reader = cv2.VideoCapture(video_path)
@@ -39,29 +40,28 @@ frame_id = 1
 features_fc7 = []
 my_lock = threading.Lock()
 
-while (frame_id < 250):
-  _, image = reader.read()
+frame_id = sys.argv[1]
 
-  request = dict()
+run_count = 0
+duration_sum = 0
 
-  request["client_input"] = image
+for i in range(30):
+  pickle_input = "/home/yitao/Downloads/tmp/docker-share/pickle_tmp_combined/video-captioning-serving/pickle_tmp/cap_vgg/%s" % (str(frame_id).zfill(3))
+  f = open(pickle_input)
+  next_request = pickle.load(f)
 
-  vgg.PreProcess(request = request, istub = istub, features_fc7 = features_fc7, my_lock = my_lock, grpc_flag = False)
-  vgg.Apply()
-  next_request = vgg.PostProcess(grpc_flag = False)
+  start = time.time()
 
-  # print(next_request["vgg_output"])
+  s2vt.PreProcess(request = next_request, istub = istub, grpc_flag = False)
+  s2vt.Apply()
+  next_request = s2vt.PostProcess(grpc_flag = False)
 
-  if (frame_id == 80 or frame_id == 160 or frame_id == 240):
-    pickle_output = "/home/yitao/Downloads/tmp/docker-share/pickle_tmp_combined/video-captioning-serving/pickle_tmp/cap_vgg/%s" % (str(frame_id).zfill(3))
-    with open(pickle_output, 'w') as f:
-      pickle.dump(next_request, f)
+  end = time.time()
+  duration = end - start
+  print("duration = %s" % duration)
 
-  # s2vt.PreProcess(request = next_request, istub = istub, grpc_flag = False)
-  # s2vt.Apply()
-  # next_request = s2vt.PostProcess(grpc_flag = False)
+  if (i > 5):
+    duration_sum += duration
+    run_count += 1
 
-  # if (next_request["FINAL"] != "None"):
-  #   print(next_request["FINAL"])
-
-  frame_id += 1
+print("average duration = %f" % (duration_sum / run_count))
