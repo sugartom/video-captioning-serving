@@ -3,6 +3,7 @@ import time
 import pickle
 import cv2
 import threading
+import sys
 
 import tensorflow as tf
 tf.logging.set_verbosity(tf.logging.ERROR)
@@ -31,7 +32,8 @@ route_table = simple_route_table
 
 measure_module = "cap_vgg"
 
-video_path = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/vid264.mp4"
+file_name = sys.argv[1]
+video_path = "/home/yitao/Documents/fun-project/tensorflow-related/video-captioning-serving/inputs/%s.mp4" % file_name
 reader = cv2.VideoCapture(video_path)
 
 frame_id = 1
@@ -53,7 +55,7 @@ while (frame_id < 250):
   # print(next_request["vgg_output"])
 
   if (frame_id == 80 or frame_id == 160 or frame_id == 240):
-    pickle_output = "/home/yitao/Downloads/tmp/docker-share/pickle_tmp_combined/video-captioning-serving/pickle_tmp/cap_vgg/%s" % (str(frame_id).zfill(3))
+    pickle_output = "/home/yitao/Downloads/tmp/docker-share/pickle_tmp_combined/video-captioning-serving/pickle_tmp/cap_vgg/%s/%s" % (file_name, str(frame_id).zfill(3))
     with open(pickle_output, 'w') as f:
       pickle.dump(next_request, f)
 
