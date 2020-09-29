@@ -14,8 +14,8 @@ class CapSequencer:
   def Setup():
     CapSequencer.out_dims = 80
 
-    CapSequencer.my_lock = threading.Lock()
-    CapSequencer.features_fc7 = []
+    # CapSequencer.my_lock = threading.Lock()
+    # CapSequencer.features_fc7 = []
 
   def GetDataDict(self, request):
     data_dict = dict()
@@ -41,7 +41,7 @@ class CapSequencer:
 
       return batched_data_dict
 
-  def Apply(self, batched_data_dict, batch_size, istub):
+  def Apply(self, batched_data_dict, batch_size, istub, features_fc7, my_lock):
     if (batch_size != len(batched_data_dict["feature_fc7"])):
       print("[Error] batch size not matched...")
       return None
@@ -50,21 +50,21 @@ class CapSequencer:
 
       batched_result_dict = dict()
 
-      CapSequencer.my_lock.acquire()
-      CapSequencer.features_fc7.extend(feature_fc7)
+      my_lock.acquire()
+      features_fc7.extend(feature_fc7)
 
-      if (len(CapSequencer.features_fc7) >= CapSequencer.out_dims):
-        curr_feats = np.array(CapSequencer.features_fc7[:CapSequencer.out_dims])
+      if (len(features_fc7) >= CapSequencer.out_dims):
+        curr_feats = np.array(features_fc7[:CapSequencer.out_dims])
         batched_result_dict["features"] = [curr_feats]
         batched_result_dict["num_features"] = [curr_feats.shape[0]]
         batched_result_dict["meta"] = ["vid264"]
-        del CapSequencer.features_fc7[:CapSequencer.out_dims]
+        del features_fc7[:CapSequencer.out_dims]
       else:
         batched_result_dict["features"] = [None]
         batched_result_dict["num_features"] = [0]
         batched_result_dict["meta"] = [None]
 
-      CapSequencer.my_lock.release()
+      my_lock.release()
 
       return batched_result_dict
 
