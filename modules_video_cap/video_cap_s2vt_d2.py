@@ -13,19 +13,20 @@ class CapS2VT:
     CapS2VT.vocab_size = len(word2id)
     CapS2VT.dropout = np.float32(1.0)
 
-  def GetDataDict(self, request):
+  def GetDataDict(self, request, grpc_flag):
     data_dict = dict()
 
-    features = tensor_util.MakeNdarray(request.inputs["features"])
-    # num_features = tensor_util.MakeNdarray(request.inputs["num_features"])
-    meta = tensor_util.MakeNdarray(request.inputs["meta"])
+    if (grpc_flag):
+      features = tensor_util.MakeNdarray(request.inputs["features"])
+      # num_features = tensor_util.MakeNdarray(request.inputs["num_features"])
+      meta = tensor_util.MakeNdarray(request.inputs["meta"])
+    else:
+      features = request["features"]
+      meta = request["meta"]
 
     data_dict["features"] = features
     # data_dict["num_features"] = num_features
     data_dict["meta"] = meta
-
-    print(features)
-    print(meta)
 
     return data_dict
 
@@ -110,8 +111,12 @@ class CapS2VT:
       result_list.append({"caption": caption})
     return result_list
 
-  def GetNextRequest(self, result):
-    next_request = predict_pb2.PredictRequest()
-    next_request.inputs["caption"].CopyFrom(
+  def GetNextRequest(self, result, grpc_flag):
+    if (grpc_flag):
+      next_request = predict_pb2.PredictRequest()
+      next_request.inputs["caption"].CopyFrom(
         tf.make_tensor_proto(result["caption"]))
+    else:
+      next_request = dict()
+      next_request["caption"] = result["caption"]
     return next_request

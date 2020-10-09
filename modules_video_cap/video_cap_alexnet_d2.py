@@ -15,11 +15,14 @@ class CapAlexnet:
     CapAlexnet.keep_prob = np.float32(1.0)
     CapAlexnet.imagenet_mean = np.array([104., 117., 124.], dtype=np.float32)
 
-  def GetDataDict(self, request):
+  def GetDataDict(self, request, grpc_flag):
     data_dict = dict()
 
     # client_input
-    image = tensor_util.MakeNdarray(request.inputs["client_input"])
+    if (grpc_flag):
+      image = tensor_util.MakeNdarray(request.inputs["client_input"])
+    else:
+      image = request["client_input"]
 
     image = cv2.resize(image.astype(np.float32), (CapAlexnet.image_size, CapAlexnet.image_size))
     image -= CapAlexnet.imagenet_mean
@@ -86,8 +89,12 @@ class CapAlexnet:
       result_list.append({"feature_fc7": feature_fc7})
     return result_list
 
-  def GetNextRequest(self, result):
-    next_request = predict_pb2.PredictRequest()
-    next_request.inputs["feature_fc7"].CopyFrom(
+  def GetNextRequest(self, result, grpc_flag):
+    if (grpc_flag):
+      next_request = predict_pb2.PredictRequest()
+      next_request.inputs["feature_fc7"].CopyFrom(
         tf.make_tensor_proto(result["feature_fc7"]))
+    else:
+      next_request = dict()
+      next_request["feature_fc7"] = result["feature_fc7"]
     return next_request

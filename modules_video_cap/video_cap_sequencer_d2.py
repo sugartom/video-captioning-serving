@@ -17,10 +17,13 @@ class CapSequencer:
     # CapSequencer.my_lock = threading.Lock()
     # CapSequencer.features_fc7 = []
 
-  def GetDataDict(self, request):
+  def GetDataDict(self, request, grpc_flag):
     data_dict = dict()
 
-    feature_fc7 = tensor_util.MakeNdarray(request.inputs["feature_fc7"])
+    if (grpc_flag):
+      feature_fc7 = tensor_util.MakeNdarray(request.inputs["feature_fc7"])
+    else:
+      feature_fc7 = request["feature_fc7"]
 
     data_dict["feature_fc7"] = feature_fc7
 
@@ -92,12 +95,18 @@ class CapSequencer:
         result_list.append({"features": features, "num_features": num_features, "meta": meta})
     return result_list
 
-  def GetNextRequest(self, result):
-    next_request = predict_pb2.PredictRequest()
-    next_request.inputs["features"].CopyFrom(
+  def GetNextRequest(self, result, grpc_flag):
+    if (grpc_flag):
+      next_request = predict_pb2.PredictRequest()
+      next_request.inputs["features"].CopyFrom(
         tf.make_tensor_proto(result["features"]))
-    next_request.inputs["num_features"].CopyFrom(
+      next_request.inputs["num_features"].CopyFrom(
         tf.make_tensor_proto(result["num_features"]))
-    next_request.inputs["meta"].CopyFrom(
+      next_request.inputs["meta"].CopyFrom(
         tf.make_tensor_proto(result["meta"]))
+    else:
+      next_request = dict()
+      next_request["features"] = result["features"]
+      next_request["num_features"] = result["num_features"]
+      next_request["meta"] = result["meta"]
     return next_request
